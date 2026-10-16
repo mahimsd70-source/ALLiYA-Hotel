@@ -1,0 +1,1027 @@
+<!-- OLD: direct wa.me -->
+<!-- NEW: bot ku trigger -->
+<a onclick="orderViaBot('1')" class="bg-green-500 px-4 py-2 rounded-full font-black cursor-pointer">
+📲 Auto Bot Order
+</a>
+
+<script>
+function orderViaBot(itemId){
+  const phone = prompt("Ungal WhatsApp Number (91...):");
+  fetch('http://localhost:3000/order-from-website', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ phone, item: itemId })
+  });
+  // User ah WhatsApp ku redirect pannu
+  window.open(`http://localhost:3000/test?text=Hi%20Bot%20I%20want%20${itemId}`, '_blank');
+}
+</script>
+
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Aalayaa - Pure Veg Restaurant | WhatsApp Ordering & Table Booking</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#181b1e',
+                            card: '#22262b',
+                            accent: '#10b981',
+                            accentHover: '#059669',
+                            whatsapp: '#25D366',
+                            whatsappHover: '#128C7E',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #181b1e; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #10b981; border-radius: 4px; }
+        .wa-bg { background-color: #efeae2; background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 12px 12px; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 antialiased selection:bg-brand-accent selection:text-white">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-brand-dark border-b border-gray-800 text-xs py-2 px-4">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div class="flex items-center gap-2">
+                <span class="bg-emerald-500/20 text-brand-accent border border-emerald-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">100% Pure Veg</span>
+                <span class="text-gray-300"><i class="fa-solid fa-leaf text-brand-accent mr-1"></i> Authentic Flavors across Ambattur, Avadi & Pattabiram</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-store text-brand-accent"></i>
+                    <span class="text-gray-400">Selected Outlet:</span>
+                    <select id="headerBranchSelect" onchange="changeActiveBranch(this.value)" class="bg-brand-card text-emerald-400 font-semibold text-xs rounded-lg px-2.5 py-1 border border-gray-700 outline-none focus:border-brand-accent">
+                        <option value="ambattur">Ambattur Branch</option>
+                        <option value="avadi">Avadi Branch</option>
+                        <option value="pattabiram">Pattabiram Branch</option>
+                    </select>
+                </div>
+                <button onclick="detectNearestBranch()" class="text-xs text-brand-accent hover:underline flex items-center gap-1">
+                    <i class="fa-solid fa-location-crosshairs"></i> Nearest
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="sticky top-0 z-40 bg-brand-dark/95 backdrop-blur-md shadow-2xl border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="relative w-12 h-12 flex items-center justify-center bg-brand-card rounded-2xl border border-gray-700 group-hover:border-brand-accent transition shadow-lg">
+                        <div class="flex items-baseline font-extrabold text-2xl tracking-tighter">
+                            <span class="text-brand-accent">h</span>
+                            <span class="text-white -ml-0.5">a</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xl font-extrabold text-white tracking-wide leading-none">Hotel Aalayaa</span>
+                        <span class="text-[11px] font-bold text-brand-accent tracking-widest uppercase mt-1">Veg Restaurant</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden lg:flex items-center space-x-6 text-sm font-semibold">
+                    <a href="#hero" class="text-gray-300 hover:text-brand-accent transition">Home</a>
+                    <a href="#menu" class="text-gray-300 hover:text-brand-accent transition">Full Menu</a>
+                    <a href="#branches" class="text-gray-300 hover:text-brand-accent transition">Branches & Maps</a>
+                    <a href="#table-booking" class="text-gray-300 hover:text-brand-accent transition">Book Table</a>
+                    <a href="#whatsapp-bot" class="text-emerald-400 hover:text-emerald-300 transition flex items-center gap-1.5 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> AI Bot Order
+                    </a>
+                </nav>
+
+                <!-- Action Buttons & Cart -->
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleCartDrawer()" class="relative bg-brand-card hover:bg-gray-800 text-white p-2.5 px-4 rounded-xl border border-gray-700 flex items-center gap-2 transition">
+                        <i class="fa-solid fa-bag-shopping text-brand-accent text-lg"></i>
+                        <span class="font-bold text-sm hidden sm:inline">Cart</span>
+                        <span id="cartBadge" class="bg-brand-accent text-brand-dark font-black text-xs px-2 py-0.5 rounded-full">0</span>
+                    </button>
+
+                    <button onclick="openWhatsAppDirectChat('Hi Hotel Aalayaa! I would like to explore your menu and place an order.')" class="hidden sm:inline-flex bg-brand-whatsapp hover:bg-brand-whatsappHover text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-green-900/30 items-center gap-2 transition transform hover:-translate-y-0.5">
+                        <i class="fa-brands fa-whatsapp text-base"></i> WhatsApp Order
+                    </button>
+
+                    <!-- Mobile Menu Button -->
+                    <button onclick="toggleMobileMenu()" class="lg:hidden text-gray-300 hover:text-white text-2xl p-1">
+                        <i class="fa-solid fa-bars-staggered"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobileMenu" class="hidden lg:hidden bg-brand-card border-b border-gray-800 px-6 py-4 space-y-3">
+            <a href="#hero" onclick="toggleMobileMenu()" class="block text-gray-200 hover:text-brand-accent py-1 font-semibold">Home</a>
+            <a href="#menu" onclick="toggleMobileMenu()" class="block text-gray-200 hover:text-brand-accent py-1 font-semibold">Full Menu & Ordering</a>
+            <a href="#branches" onclick="toggleMobileMenu()" class="block text-gray-200 hover:text-brand-accent py-1 font-semibold">Branches & Directions</a>
+            <a href="#table-booking" onclick="toggleMobileMenu()" class="block text-gray-200 hover:text-brand-accent py-1 font-semibold">Table Reservation</a>
+            <a href="#whatsapp-bot" onclick="toggleMobileMenu()" class="block text-emerald-400 py-1 font-semibold"><i class="fa-brands fa-whatsapp mr-2"></i> WhatsApp AI Bot Simulator</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative py-16 lg:py-24 bg-brand-dark overflow-hidden border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                
+                <div class="space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 bg-brand-card border border-emerald-500/30 px-3 py-1.5 rounded-full text-brand-accent text-xs font-bold">
+                        <i class="fa-solid fa-fire text-amber-500"></i>
+                        <span>Instant WhatsApp Orders & Delivery Across Chennai West</span>
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight">
+                        Crispy, Smokey & Authentic <span class="text-brand-accent">Veg Delights</span>
+                    </h1>
+
+                    <p class="text-gray-400 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                        Order Paneer Barbeque, Ex Kurma, Vadakari, and Special South Indian Thalis directly on WhatsApp. Quick delivery from <b>Ambattur, Avadi & Pattabiram</b>.
+                    </p>
+
+                    <!-- Interactive Hero Buttons -->
+                    <div class="flex flex-wrap justify-center lg:justify-start gap-3 pt-2">
+                        <button onclick="openWhatsAppDirectChat('👋 Hi Hotel Aalayaa! I want to view today\'s special menu and place an order.')" class="bg-brand-whatsapp hover:bg-brand-whatsappHover text-white font-bold px-6 py-3.5 rounded-2xl shadow-xl shadow-emerald-950/40 flex items-center gap-2 transition transform hover:-translate-y-0.5">
+                            <i class="fa-brands fa-whatsapp text-xl"></i> Order via WhatsApp Bot
+                        </button>
+
+                        <a href="#menu" class="bg-brand-card hover:bg-gray-800 text-white font-semibold px-6 py-3.5 rounded-2xl border border-gray-700 flex items-center gap-2 transition">
+                            <i class="fa-solid fa-utensils text-brand-accent"></i> Browse Web Menu
+                        </a>
+                    </div>
+
+                    <!-- Quick Branch Selector Chips -->
+                    <div class="pt-4 flex flex-wrap justify-center lg:justify-start items-center gap-2 text-xs text-gray-400">
+                        <span class="font-bold text-gray-300">Choose Branch:</span>
+                        <button onclick="changeActiveBranch('ambattur')" class="bg-gray-800 hover:bg-emerald-900/40 text-emerald-400 px-3 py-1 rounded-lg border border-gray-700">Ambattur</button>
+                        <button onclick="changeActiveBranch('avadi')" class="bg-gray-800 hover:bg-emerald-900/40 text-emerald-400 px-3 py-1 rounded-lg border border-gray-700">Avadi</button>
+                        <button onclick="changeActiveBranch('pattabiram')" class="bg-gray-800 hover:bg-emerald-900/40 text-emerald-400 px-3 py-1 rounded-lg border border-gray-700">Pattabiram</button>
+                    </div>
+                </div>
+
+                <!-- Featured Food Carousel/Card -->
+                <div class="relative">
+                    <div class="relative rounded-3xl overflow-hidden border border-gray-700 shadow-2xl bg-brand-card group">
+                        <img src="https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=800&q=80" alt="Paneer Barbeque" class="w-full h-[380px] sm:h-[420px] object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent opacity-90"></div>
+                        
+                        <div class="absolute bottom-6 left-6 right-6 bg-brand-card/90 backdrop-blur-md p-5 rounded-2xl border border-gray-700 flex items-center justify-between">
+                            <div>
+                                <span class="bg-emerald-500/20 text-brand-accent text-[10px] font-black px-2.5 py-0.5 rounded uppercase">Bestseller</span>
+                                <h3 class="text-white font-bold text-lg mt-1">Paneer Barbeque</h3>
+                                <p class="text-xs text-gray-400">Rich cottage cheese marinated with signature spices</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-brand-accent font-black text-xl block">₹250</span>
+                                <button onclick="quickOrderSingleItem('Paneer Barbeque', 250)" class="mt-1 bg-brand-whatsapp hover:bg-brand-whatsappHover text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1">
+                                    <i class="fa-brands fa-whatsapp"></i> Order
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Branch Selector & Maps Section -->
+    <section id="branches" class="py-16 bg-gray-950 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <span class="text-brand-accent font-bold text-xs uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Our Locations</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">Select Outlet & Get Directions</h2>
+                <p class="text-gray-400 text-sm mt-2">Find your nearest Hotel Aalayaa branch in Ambattur, Avadi, or Pattabiram.</p>
+            </div>
+
+            <!-- Branch Tabs -->
+            <div class="flex flex-wrap justify-center gap-3 mb-8">
+                <button onclick="selectBranchTab('ambattur')" id="tab-ambattur" class="branch-tab-btn active bg-brand-accent text-brand-dark font-bold px-5 py-2.5 rounded-xl transition shadow">
+                    <i class="fa-solid fa-location-dot mr-1.5"></i> Ambattur
+                </button>
+                <button onclick="selectBranchTab('avadi')" id="tab-avadi" class="branch-tab-btn bg-brand-card text-gray-300 font-semibold px-5 py-2.5 rounded-xl border border-gray-800 hover:border-gray-700 transition">
+                    <i class="fa-solid fa-location-dot mr-1.5"></i> Avadi
+                </button>
+                <button onclick="selectBranchTab('pattabiram')" id="tab-pattabiram" class="branch-tab-btn bg-brand-card text-gray-300 font-semibold px-5 py-2.5 rounded-xl border border-gray-800 hover:border-gray-700 transition">
+                    <i class="fa-solid fa-location-dot mr-1.5"></i> Pattabiram
+                </button>
+            </div>
+
+            <!-- Branch Card & Live Map Frame -->
+            <div class="bg-brand-card rounded-3xl border border-gray-800 p-6 lg:p-8 shadow-2xl">
+                <div class="grid lg:grid-cols-5 gap-8 items-center">
+                    
+                    <div class="lg:col-span-2 space-y-5">
+                        <div>
+                            <span id="displayDistanceBadge" class="inline-block bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[11px] font-bold px-2.5 py-0.5 rounded-md mb-2">Distance: 1.2 km away</span>
+                            <h3 id="displayBranchName" class="text-2xl font-bold text-white">Ambattur Branch</h3>
+                            <p id="displayBranchAddress" class="text-gray-400 text-sm mt-2 leading-relaxed">
+                                No. 42, MTH Road, Near Telephone Exchange, Ambattur, Chennai - 600053.
+                            </p>
+                        </div>
+
+                        <div class="space-y-3 text-sm">
+                            <div class="flex items-center gap-3 text-gray-300">
+                                <div class="w-9 h-9 rounded-xl bg-gray-800 text-brand-accent flex items-center justify-center border border-gray-700">
+                                    <i class="fa-solid fa-clock"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-white text-xs">Timing</p>
+                                    <p class="text-xs text-gray-400">7:00 AM - 10:30 PM (Daily)</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3 text-gray-300">
+                                <div class="w-9 h-9 rounded-xl bg-gray-800 text-brand-accent flex items-center justify-center border border-gray-700">
+                                    <i class="fa-solid fa-phone"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-white text-xs">Direct Helpline</p>
+                                    <p id="displayBranchPhone" class="text-xs text-gray-400">+91 98765 43210</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 flex flex-wrap gap-2">
+                            <button onclick="shareBranchLocationOnWhatsApp()" class="bg-brand-whatsapp hover:bg-brand-whatsappHover text-white font-bold text-xs px-4 py-2.5 rounded-xl flex items-center gap-1.5 transition">
+                                <i class="fa-brands fa-whatsapp text-sm"></i> Share Location on WhatsApp
+                            </button>
+                            <a id="googleMapsBtn" href="https://maps.google.com" target="_blank" class="bg-gray-800 hover:bg-gray-700 text-white font-semibold text-xs px-4 py-2.5 rounded-xl border border-gray-700 flex items-center gap-1.5 transition">
+                                <i class="fa-solid fa-diamond-turn-right text-blue-400"></i> Open Maps
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Map Frame -->
+                    <div class="lg:col-span-3 h-[320px] rounded-2xl overflow-hidden border border-gray-800 relative shadow-inner">
+                        <iframe id="branchMapIframe" class="w-full h-full border-0" 
+                            src="https://maps.google.com/maps?q=Ambattur+Chennai&t=&z=14&ie=UTF8&iwloc=&output=embed" 
+                            loading="lazy">
+                        </iframe>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu & Ordering Section (Populated directly from menu Image) -->
+    <section id="menu" class="py-16 bg-brand-dark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+                <div>
+                    <span class="text-brand-accent font-bold text-xs uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Official Hotel Menu</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">Pure Veg Delicacies</h2>
+                    <p class="text-gray-400 text-sm mt-1">Select items to add to cart or order instantly via WhatsApp.</p>
+                </div>
+
+                <!-- Category Filters -->
+                <div class="flex flex-wrap gap-2" id="categoryFilters">
+                    <button onclick="filterMenuCategory('all')" class="cat-filter-btn active bg-brand-accent text-brand-dark font-bold text-xs px-4 py-2 rounded-xl">All Items</button>
+                    <button onclick="filterMenuCategory('barbeque')" class="cat-filter-btn bg-brand-card hover:bg-gray-800 text-gray-300 font-semibold text-xs px-4 py-2 rounded-xl border border-gray-800">Barbeque & Grills</button>
+                    <button onclick="filterMenuCategory('gravy')" class="cat-filter-btn bg-brand-card hover:bg-gray-800 text-gray-300 font-semibold text-xs px-4 py-2 rounded-xl border border-gray-800">Extra Gravies & Curries</button>
+                    <button onclick="filterMenuCategory('starters')" class="cat-filter-btn bg-brand-card hover:bg-gray-800 text-gray-300 font-semibold text-xs px-4 py-2 rounded-xl border border-gray-800">Starters & Papads</button>
+                    <button onclick="filterMenuCategory('raita')" class="cat-filter-btn bg-brand-card hover:bg-gray-800 text-gray-300 font-semibold text-xs px-4 py-2 rounded-xl border border-gray-800">Raitas & Salad</button>
+                </div>
+            </div>
+
+            <!-- Menu Cards Grid -->
+            <div id="menuGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Dynamically Inserted -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Simulated WhatsApp Interactive AI Bot Simulator Section -->
+    <section id="whatsapp-bot" class="py-16 bg-gray-950 border-t border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <span class="bg-emerald-500/20 text-brand-accent text-xs font-extrabold px-3 py-1 rounded-full border border-emerald-500/30">
+                    <i class="fa-brands fa-whatsapp text-emerald-400 mr-1"></i> Interactive WhatsApp Bot
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">Try Our WhatsApp Order Bot</h2>
+                <p class="text-gray-400 text-sm mt-2">Test out how automated ordering, menu pictures, UPI payments, and location sharing work directly in WhatsApp.</p>
+            </div>
+
+            <!-- Simulated Phone Frame -->
+            <div class="max-w-lg mx-auto bg-gray-900 rounded-[32px] overflow-hidden shadow-2xl border-4 border-gray-800 relative">
+                
+                <!-- Phone Header Bar -->
+                <div class="bg-[#075E54] text-white p-4 flex items-center justify-between shadow">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-brand-dark border-2 border-emerald-400 flex items-center justify-center font-bold text-brand-accent text-sm">
+                            ha
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-1">
+                                <h4 class="font-bold text-sm">Hotel Aalayaa Order Bot</h4>
+                                <i class="fa-solid fa-circle-check text-emerald-400 text-xs"></i>
+                            </div>
+                            <p class="text-[10px] text-emerald-200">Official Automated Business Account</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 text-emerald-100 text-sm">
+                        <button onclick="openWhatsAppDirectChat('Hi Hotel Aalayaa Bot!')" title="Open in real WhatsApp"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </div>
+                </div>
+
+                <!-- Chat Body -->
+                <div id="simChatWindow" class="h-[400px] wa-bg p-4 overflow-y-auto space-y-3 custom-scrollbar text-xs text-gray-800">
+                    
+                    <!-- Bot Welcome Message -->
+                    <div class="flex flex-col items-start max-w-[90%]">
+                        <div class="bg-white p-3.5 rounded-2xl rounded-tl-none shadow space-y-2">
+                            <p class="font-semibold text-emerald-900">👋 Welcome to Hotel Aalayaa Pure Veg! 🌿</p>
+                            <p class="text-gray-600 text-[11px]">How can we assist you today? Please tap an option or type a number:</p>
+                            
+                            <div class="flex flex-col gap-1.5 pt-1">
+                                <button onclick="simBotResponse('1')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold py-1.5 px-3 rounded-lg border border-emerald-200 text-left text-[11px]">1. 🍕 View Menu & Food Pictures</button>
+                                <button onclick="simBotResponse('2')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold py-1.5 px-3 rounded-lg border border-emerald-200 text-left text-[11px]">2. 📍 Branch Details & Location</button>
+                                <button onclick="simBotResponse('3')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold py-1.5 px-3 rounded-lg border border-emerald-200 text-left text-[11px]">3. 💳 Quick UPI / Card Payment Link</button>
+                                <button onclick="simBotResponse('4')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold py-1.5 px-3 rounded-lg border border-emerald-200 text-left text-[11px]">4. 🪑 Book a Dining Table</button>
+                            </div>
+                        </div>
+                        <span class="text-[9px] text-gray-500 mt-1 pl-1">Just now</span>
+                    </div>
+
+                </div>
+
+                <!-- Chat Footer / Input -->
+                <div class="p-3 bg-gray-100 border-t border-gray-300 flex items-center gap-2">
+                    <input type="text" id="simUserInput" placeholder="Type a message or choice..." onkeypress="handleSimKeyPress(event)" class="flex-1 bg-white border border-gray-300 rounded-full px-4 py-2 text-xs focus:outline-none focus:border-emerald-600 text-gray-800">
+                    <button onclick="sendSimUserMessage()" class="w-9 h-9 rounded-full bg-[#075E54] text-white flex items-center justify-center hover:bg-emerald-800 transition shadow">
+                        <i class="fa-solid fa-paper-plane text-xs"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="text-center mt-6">
+                <button onclick="openWhatsAppDirectChat('Hi Hotel Aalayaa! I am testing your WhatsApp Ordering Bot.')" class="inline-flex items-center gap-2 bg-brand-whatsapp hover:bg-brand-whatsappHover text-white text-xs font-bold px-5 py-3 rounded-xl shadow-lg">
+                    <i class="fa-brands fa-whatsapp text-base"></i> Switch to Live Phone WhatsApp
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Table Reservation Section -->
+    <section id="table-booking" class="py-16 bg-brand-dark text-white border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                
+                <div class="space-y-4">
+                    <span class="text-brand-accent font-bold text-xs uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Instant Table Booking</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold">Reserve Your Dining Table</h2>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Enjoy priority seating with zero wait times. Reserve your table for lunch or dinner at Ambattur, Avadi, or Pattabiram branches.
+                    </p>
+
+                    <div class="space-y-3 pt-2">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-brand-card flex items-center justify-center text-brand-accent border border-gray-700">
+                                <i class="fa-solid fa-chair"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold">Guaranteed Reservation</p>
+                                <p class="text-xs text-gray-400">Confirmation sent instantly via WhatsApp message</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-brand-card flex items-center justify-center text-brand-accent border border-gray-700">
+                                <i class="fa-solid fa-champagne-glasses"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold">Family & Party Seating</p>
+                                <p class="text-xs text-gray-400">Special table arrangements for groups up to 20 guests</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Card -->
+                <div class="bg-brand-card p-6 sm:p-8 rounded-3xl border border-gray-800 shadow-2xl">
+                    <form id="tableBookingForm" onsubmit="handleTableBookingSubmit(event)" class="space-y-4">
+                        <h3 class="text-lg font-bold text-white mb-2">Reservation Form</h3>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 mb-1">Select Branch</label>
+                            <select id="bookBranch" required class="w-full bg-brand-dark border border-gray-700 text-white rounded-xl p-3 text-xs focus:border-brand-accent outline-none">
+                                <option value="Ambattur">Ambattur Branch</option>
+                                <option value="Avadi">Avadi Branch</option>
+                                <option value="Pattabiram">Pattabiram Branch</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-400 mb-1">Date</label>
+                                <input type="date" id="bookDate" required class="w-full bg-brand-dark border border-gray-700 text-white rounded-xl p-3 text-xs focus:border-brand-accent outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-400 mb-1">Time Slot</label>
+                                <select id="bookTime" required class="w-full bg-brand-dark border border-gray-700 text-white rounded-xl p-3 text-xs focus:border-brand-accent outline-none">
+                                    <option>12:30 PM - Lunch</option>
+                                    <option>01:30 PM - Lunch</option>
+                                    <option>07:30 PM - Dinner</option>
+                                    <option>08:30 PM - Dinner</option>
+                                    <option>09:30 PM - Dinner</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-400 mb-1">Number of Guests</label>
+                                <input type="number" id="bookGuests" min="1" max="20" value="2" required class="w-full bg-brand-dark border border-gray-700 text-white rounded-xl p-3 text-xs focus:border-brand-accent outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-400 mb-1">Full Name</label>
+                                <input type="text" id="bookName" placeholder="Your Name" required class="w-full bg-brand-dark border border-gray-700 text-white rounded-xl p-3 text-xs focus:border-brand-accent outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 mb-1">WhatsApp Number</label>
+                            <input type="tel" id="bookPhone" placeholder="9876543210" required class="w-full bg-brand-dark border border-gray-700 text-white rounded-xl p-3 text-xs focus:border-brand-accent outline-none">
+                        </div>
+
+                        <button type="submit" class="w-full bg-brand-whatsapp hover:bg-brand-whatsappHover text-white font-bold py-3.5 rounded-xl shadow-lg flex items-center justify-center gap-2 text-xs transition mt-2">
+                            <i class="fa-brands fa-whatsapp text-base"></i> Confirm Reservation via WhatsApp
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-950 text-gray-400 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="space-y-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-brand-accent font-black text-xl">ha</span>
+                    <span class="text-white font-bold text-lg">Hotel Aalayaa</span>
+                </div>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    100% Pure Vegetarian Restaurant specializing in Barbeque, South Indian Classics, Gravies & Fast Food in Chennai.
+                </p>
+            </div>
+
+            <div>
+                <h4 class="text-white text-xs font-bold uppercase tracking-wider mb-3">Our Outlets</h4>
+                <ul class="text-xs space-y-2">
+                    <li><i class="fa-solid fa-angle-right text-brand-accent mr-1"></i> Ambattur MTH Road</li>
+                    <li><i class="fa-solid fa-angle-right text-brand-accent mr-1"></i> Avadi Station Road</li>
+                    <li><i class="fa-solid fa-angle-right text-brand-accent mr-1"></i> Pattabiram High Road</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white text-xs font-bold uppercase tracking-wider mb-3">Quick Navigation</h4>
+                <ul class="text-xs space-y-2">
+                    <li><a href="#menu" class="hover:text-brand-accent">Menu List & Prices</a></li>
+                    <li><a href="#table-booking" class="hover:text-brand-accent">Book Dining Table</a></li>
+                    <li><a href="#whatsapp-bot" class="hover:text-brand-accent">WhatsApp Bot Simulator</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white text-xs font-bold uppercase tracking-wider mb-3">Direct Support</h4>
+                <p class="text-xs">Helpline: +91 98765 43210</p>
+                <p class="text-xs mt-1">Email: order@hotelaalayaa.com</p>
+                <div class="flex gap-3 mt-4 text-lg">
+                    <a href="#" class="text-gray-400 hover:text-brand-accent"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-brand-accent"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="text-brand-accent"><i class="fa-brands fa-whatsapp text-xl"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-xs text-gray-600 mt-12 border-t border-gray-900 pt-6">
+            © 2026 Hotel Aalayaa Veg Restaurant. All Rights Reserved.
+        </div>
+    </footer>
+
+    <!-- CART SIDE DRAWER -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 invisible transition-all duration-300">
+        <div onclick="toggleCartDrawer()" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-brand-dark shadow-2xl flex flex-col justify-between transform translate-x-full transition-transform duration-300 border-l border-gray-800" id="cartContent">
+            
+            <!-- Drawer Header -->
+            <div class="p-4 bg-brand-card text-white flex items-center justify-between border-b border-gray-800">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-bag-shopping text-brand-accent"></i>
+                    <h3 class="font-bold text-base">Your Food Cart</h3>
+                </div>
+                <button onclick="toggleCartDrawer()" class="text-gray-400 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Active Outlet Info -->
+            <div class="bg-emerald-500/10 px-4 py-2 border-b border-emerald-500/20 text-xs flex justify-between items-center text-emerald-400">
+                <span>Selected Outlet: <b id="cartBranchText">Ambattur Branch</b></span>
+                <a href="#branches" onclick="toggleCartDrawer()" class="underline font-bold">Change</a>
+            </div>
+
+            <!-- Items List -->
+            <div id="cartItemsList" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+                <!-- Dynamic Items -->
+            </div>
+
+            <!-- Checkout Footer -->
+            <div class="p-4 bg-brand-card border-t border-gray-800 space-y-3">
+                <div class="space-y-1.5 text-xs text-gray-300">
+                    <div class="flex justify-between">
+                        <span>Items Subtotal</span>
+                        <span id="cartSubtotal" class="font-bold text-white">₹0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Taxes & Packaging</span>
+                        <span id="cartTax" class="font-bold text-white">₹0</span>
+                    </div>
+                    <div class="flex justify-between font-extrabold text-sm text-white border-t border-gray-700 pt-2">
+                        <span>Total Payable</span>
+                        <span id="cartTotal" class="text-brand-accent">₹0</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 pt-2">
+                    <button onclick="checkoutViaWhatsAppDirect()" class="bg-brand-whatsapp hover:bg-brand-whatsappHover text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-1.5">
+                        <i class="fa-brands fa-whatsapp text-sm"></i> Order via WhatsApp
+                    </button>
+                    <button onclick="openPaymentGatewayModal()" class="bg-brand-accent hover:bg-brand-accentHover text-brand-dark font-extrabold py-3 rounded-xl text-xs flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-qrcode"></i> Pay UPI / Card
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ONLINE PAYMENT GATEWAY & UPI QR MODAL -->
+    <div id="paymentGatewayModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="bg-brand-card rounded-3xl max-w-md w-full p-6 space-y-5 border border-gray-700 text-white relative shadow-2xl">
+            <button onclick="closePaymentGatewayModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div>
+                <span class="text-xs font-bold text-brand-accent uppercase tracking-wider">Instant Payment</span>
+                <h3 class="text-xl font-black mt-0.5">Complete Online Payment</h3>
+            </div>
+
+            <!-- Dynamic UPI QR Code Box -->
+            <div class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center text-gray-900 border border-gray-200">
+                <p class="text-[11px] font-bold text-gray-500 mb-2 uppercase">Scan with Google Pay / PhonePe / Paytm</p>
+                <img id="upiQrImage" src="" alt="UPI QR Code" class="w-44 h-44 rounded-xl border border-gray-300">
+                <p class="text-xs font-bold text-emerald-700 mt-2">Payable Total: <span id="modalPayAmountDisplay" class="text-base font-black">₹0</span></p>
+            </div>
+
+            <!-- Payment Method Radio Options -->
+            <div class="space-y-2 text-xs">
+                <label class="flex items-center justify-between p-3 bg-brand-dark border border-gray-700 rounded-xl cursor-pointer hover:border-brand-accent">
+                    <div class="flex items-center gap-2">
+                        <input type="radio" name="payOption" value="UPI Apps" checked class="accent-brand-accent">
+                        <span>Google Pay / PhonePe / Paytm UPI</span>
+                    </div>
+                    <i class="fa-solid fa-mobile-screen text-brand-accent"></i>
+                </label>
+
+                <label class="flex items-center justify-between p-3 bg-brand-dark border border-gray-700 rounded-xl cursor-pointer hover:border-brand-accent">
+                    <div class="flex items-center gap-2">
+                        <input type="radio" name="payOption" value="Credit/Debit Card" class="accent-brand-accent">
+                        <span>Credit / Debit Card</span>
+                    </div>
+                    <i class="fa-solid fa-credit-card text-gray-400"></i>
+                </label>
+            </div>
+
+            <!-- Customer Details Inputs -->
+            <div class="space-y-2 text-xs">
+                <input type="text" id="custPayName" placeholder="Your Full Name" class="w-full bg-brand-dark border border-gray-700 rounded-xl p-3 text-white focus:border-brand-accent outline-none">
+                <input type="tel" id="custPayPhone" placeholder="WhatsApp Mobile Number" class="w-full bg-brand-dark border border-gray-700 rounded-xl p-3 text-white focus:border-brand-accent outline-none">
+            </div>
+
+            <button onclick="confirmOnlinePaymentAndSendWhatsApp()" class="w-full bg-brand-accent hover:bg-brand-accentHover text-brand-dark font-extrabold py-3.5 rounded-xl text-xs transition shadow-lg">
+                I Have Paid - Send Confirmation to WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 bg-brand-dark text-white border border-brand-accent px-4 py-3 rounded-2xl shadow-2xl hidden flex items-center gap-3 text-xs">
+        <i class="fa-solid fa-circle-check text-brand-accent text-base"></i>
+        <span id="toastMsg">Notification message</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Official Menu Items Dataset (Exclusively matching image_f16aa9.jpg)
+        const fullMenuList = [
+            { id: 1, name: 'Ex Koottu (250ml)', price: 60, cat: 'gravy', img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=400&q=80', desc: 'Healthy traditional South Indian lentil & veggie stew.' },
+            { id: 2, name: 'Ex Kurma (400ml)', price: 80, cat: 'gravy', img: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=400&q=80', desc: 'Rich coconut & spice blended vegetable kurma.' },
+            { id: 3, name: 'Ex Karakulambu (400ml)', price: 80, cat: 'gravy', img: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400&q=80', desc: 'Tangy and spicy South Indian gravy.' },
+            { id: 4, name: 'Ex Vadakari (400ml)', price: 80, cat: 'gravy', img: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=400&q=80', desc: 'Chennai special lentil dumpling gravy.' },
+            { id: 5, name: 'Ex Rice', price: 75, cat: 'starters', img: 'https://images.unsplash.com/photo-1516684732162-798a0062be99?auto=format&fit=crop&w=400&q=80', desc: 'Steamed premium ponni rice portion.' },
+            { id: 6, name: 'Ex Poriyal (250ml)', price: 60, cat: 'starters', img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80', desc: 'Freshly sautéed seasonal vegetable stir-fry.' },
+            { id: 7, name: 'Ex Sambar (400ml)', price: 70, cat: 'gravy', img: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400&q=80', desc: 'Aromatic home-style lentil sambar.' },
+            { id: 8, name: 'Brownie', price: 90, cat: 'starters', img: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=400&q=80', desc: 'Soft fudgy chocolate brownie dessert.' },
+            { id: 9, name: 'Mushroom Barbeque', price: 250, cat: 'barbeque', img: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=400&q=80', desc: 'Juicy spiced barbeque button mushrooms.' },
+            { id: 10, name: 'Paneer Barbeque', price: 250, cat: 'barbeque', img: 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=400&q=80', desc: 'Char-grilled cottage cheese skewers with spices.' },
+            { id: 11, name: 'Barbeque Veg Roll', price: 200, cat: 'barbeque', img: 'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=400&q=80', desc: 'Crispy wrap loaded with grilled vegetables.' },
+            { id: 12, name: 'Brocolli Barbeque', price: 225, cat: 'barbeque', img: 'https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c?auto=format&fit=crop&w=400&q=80', desc: 'Smokey charred broccoli florets.' },
+            { id: 13, name: 'Golden Fried Baby Corn', price: 200, cat: 'starters', img: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=400&q=80', desc: 'Deep-fried golden baby corn sticks.' },
+            { id: 14, name: 'Veg Ball Manchurian Dry', price: 280, cat: 'starters', img: 'https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=400&q=80', desc: 'Crispy veggie balls tossed in Manchurian sauce.' },
+            { id: 15, name: 'Pineapple Raita', price: 100, cat: 'raita', img: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=400&q=80', desc: 'Sweet pineapple chunks in chilled yogurt.' },
+            { id: 16, name: 'Boondhi Raita', price: 100, cat: 'raita', img: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=400&q=80', desc: 'Crispy boondi in tempered spicy curd.' },
+            { id: 17, name: 'Cucumber Raita', price: 80, cat: 'raita', img: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=400&q=80', desc: 'Refreshing chopped cucumber yogurt.' }
+        ];
+
+        // Branches Dataset
+        const branchDataset = {
+            ambattur: {
+                name: "Ambattur Branch",
+                address: "No. 42, MTH Road, Near Telephone Exchange, Ambattur, Chennai - 600053",
+                phone: "+91 98765 43210",
+                distance: "1.2 km away",
+                mapSrc: "https://maps.google.com/maps?q=Ambattur+Chennai&t=&z=14&ie=UTF8&iwloc=&output=embed"
+            },
+            avadi: {
+                name: "Avadi Branch",
+                address: "Plot 15, Railway Station Road, Near Avadi Bus Depot, Avadi, Chennai - 600054",
+                phone: "+91 98765 43211",
+                distance: "4.8 km away",
+                mapSrc: "https://maps.google.com/maps?q=Avadi+Chennai&t=&z=14&ie=UTF8&iwloc=&output=embed"
+            },
+            pattabiram: {
+                name: "Pattabiram Branch",
+                address: "Door No. 88, CTH Road, Opposite Hindu College, Pattabiram, Chennai - 600072",
+                phone: "+91 98765 43212",
+                distance: "7.1 km away",
+                mapSrc: "https://maps.google.com/maps?q=Pattabiram+Chennai&t=&z=14&ie=UTF8&iwloc=&output=embed"
+            }
+        };
+
+        let selectedBranchKey = 'ambattur';
+        let cart = [];
+        const HOTEL_WHATSAPP_NUMBER = "919876543210";
+
+        // Initialize Page
+        window.onload = function() {
+            renderMenuCards('all');
+            updateCartDisplay();
+        };
+
+        // Render Menu Cards
+        function renderMenuCards(category) {
+            const grid = document.getElementById('menuGrid');
+            grid.innerHTML = '';
+
+            const items = category === 'all' ? fullMenuList : fullMenuList.filter(m => m.cat === category);
+
+            items.forEach(item => {
+                grid.innerHTML += `
+                    <div class="bg-brand-card rounded-2xl overflow-hidden border border-gray-800 shadow-md hover:border-gray-700 transition flex flex-col justify-between">
+                        <div>
+                            <div class="relative h-44 overflow-hidden">
+                                <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover hover:scale-105 transition duration-300" onerror="this.src='https://placehold.co/400x300/22262b/10b981?text=${encodeURIComponent(item.name)}'">
+                                <span class="absolute top-2 right-2 bg-brand-dark/90 text-brand-accent text-[10px] font-extrabold px-2 py-0.5 rounded-md border border-gray-700">Veg</span>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-bold text-white text-base">${item.name}</h3>
+                                <p class="text-xs text-gray-400 mt-1 line-clamp-2">${item.desc}</p>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0 flex items-center justify-between border-t border-gray-800/60 mt-2">
+                            <span class="text-lg font-black text-white">₹${item.price}</span>
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="quickOrderSingleItem('${item.name}', ${item.price})" class="bg-brand-whatsapp hover:bg-brand-whatsappHover text-white text-[11px] font-bold p-2 px-3 rounded-xl flex items-center gap-1" title="Order directly on WhatsApp">
+                                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                                </button>
+                                <button onclick="addToCart(${item.id})" class="bg-brand-accent hover:bg-brand-accentHover text-brand-dark text-[11px] font-extrabold p-2 px-3 rounded-xl flex items-center gap-1">
+                                    <i class="fa-solid fa-plus"></i> Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterMenuCategory(cat) {
+            document.querySelectorAll('.cat-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-accent', 'text-brand-dark');
+                btn.classList.add('bg-brand-card', 'text-gray-300');
+            });
+            event.target.classList.remove('bg-brand-card', 'text-gray-300');
+            event.target.classList.add('bg-brand-accent', 'text-brand-dark');
+            renderMenuCards(cat);
+        }
+
+        // Direct WhatsApp Helper Function
+        function openWhatsAppDirectChat(customText) {
+            const url = `http://localhost:3000/test${HOTEL_WHATSAPP_NUMBER}?text=${encodeURIComponent(customText)}`;
+            window.open(url, '_blank');
+        }
+
+        function quickOrderSingleItem(itemName, price) {
+            const branchName = branchDataset[selectedBranchKey].name;
+            const text = `👋 Hi Hotel Aalayaa! I want to order:\n• 1x ${itemName} (₹${price})\n\nBranch Outlet: ${branchName}\nPlease confirm delivery time & UPI payment details!`;
+            openWhatsAppDirectChat(text);
+        }
+
+        // Branch Selection
+        function selectBranchTab(key) {
+            selectedBranchKey = key;
+            const b = branchDataset[key];
+
+            document.getElementById('displayBranchName').innerText = b.name;
+            document.getElementById('displayBranchAddress').innerText = b.address;
+            document.getElementById('displayBranchPhone').innerText = b.phone;
+            document.getElementById('displayDistanceBadge').innerText = `Distance: ${b.distance}`;
+            document.getElementById('branchMapIframe').src = b.mapSrc;
+            document.getElementById('cartBranchText').innerText = b.name;
+
+            document.querySelectorAll('.branch-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-accent', 'text-brand-dark');
+                btn.classList.add('bg-brand-card', 'text-gray-300');
+            });
+            document.getElementById(`tab-${key}`).classList.remove('bg-brand-card', 'text-gray-300');
+            document.getElementById(`tab-${key}`).classList.add('bg-brand-accent', 'text-brand-dark');
+        }
+
+        function changeActiveBranch(val) {
+            selectBranchTab(val);
+            document.getElementById('headerBranchSelect').value = val;
+            showToast(`Selected ${branchDataset[val].name} as active outlet!`);
+        }
+
+        function detectNearestBranch() {
+            showToast("Location detected! Setting Avadi Branch as nearest (4.8 km).");
+            changeActiveBranch('avadi');
+        }
+
+        function shareBranchLocationOnWhatsApp() {
+            const b = branchDataset[selectedBranchKey];
+            const text = `📍 *Hotel Aalayaa (${b.name})*\nAddress: ${b.address}\nPhone: ${b.phone}\nMap Directions: https://maps.google.com/?q=${encodeURIComponent(b.name + " Chennai")}`;
+            openWhatsAppDirectChat(text);
+        }
+
+        // Cart Management
+        function addToCart(id) {
+            const item = fullMenuList.find(m => m.id === id);
+            const existing = cart.find(c => c.id === id);
+
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...item, qty: 1 });
+            }
+
+            updateCartDisplay();
+            showToast(`Added ${item.name} to cart!`);
+        }
+
+        function updateCartQty(id, delta) {
+            const item = cart.find(c => c.id === id);
+            if (!item) return;
+
+            item.qty += delta;
+            if (item.qty <= 0) {
+                cart = cart.filter(c => c.id !== id);
+            }
+            updateCartDisplay();
+        }
+
+        function updateCartDisplay() {
+            const list = document.getElementById('cartItemsList');
+            const badge = document.getElementById('cartBadge');
+            const totalQty = cart.reduce((acc, i) => acc + i.qty, 0);
+
+            badge.innerText = totalQty;
+
+            if (cart.length === 0) {
+                list.innerHTML = `
+                    <div class="text-center py-12 text-gray-500">
+                        <i class="fa-solid fa-basket-shopping text-3xl mb-2 text-gray-600"></i>
+                        <p class="text-xs">Your cart is empty.</p>
+                    </div>
+                `;
+            } else {
+                list.innerHTML = cart.map(i => `
+                    <div class="flex items-center justify-between bg-brand-card p-3 rounded-xl border border-gray-800">
+                        <div class="flex items-center gap-3">
+                            <img src="${i.img}" class="w-11 h-11 rounded-lg object-cover">
+                            <div>
+                                <h4 class="font-bold text-xs text-white">${i.name}</h4>
+                                <p class="text-[11px] text-gray-400">₹${i.price} × ${i.qty}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 bg-brand-dark border border-gray-700 rounded-lg p-1">
+                            <button onclick="updateCartQty(${i.id}, -1)" class="w-5 h-5 flex items-center justify-center text-xs text-gray-400 hover:text-white">-</button>
+                            <span class="text-xs font-bold text-white px-1">${i.qty}</span>
+                            <button onclick="updateCartQty(${i.id}, 1)" class="w-5 h-5 flex items-center justify-center text-xs text-gray-400 hover:text-white">+</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+            const tax = Math.round(subtotal * 0.05);
+            const grandTotal = subtotal + tax;
+
+            document.getElementById('cartSubtotal').innerText = `₹${subtotal}`;
+            document.getElementById('cartTax').innerText = `₹${tax}`;
+            document.getElementById('cartTotal').innerText = `₹${grandTotal}`;
+            document.getElementById('modalPayAmountDisplay').innerText = `₹${grandTotal}`;
+
+            // Generate UPI QR Code URL
+            const upiUrl = `upi://pay?pa=hotelaalayaa@upi&pn=HotelAalayaa&am=${grandTotal}&cu=INR`;
+            document.getElementById('upiQrImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
+        }
+
+        function toggleCartDrawer() {
+            const drawer = document.getElementById('cartDrawer');
+            const content = document.getElementById('cartContent');
+
+            if (drawer.classList.contains('invisible')) {
+                drawer.classList.remove('invisible');
+                setTimeout(() => content.classList.remove('translate-x-full'), 10);
+            } else {
+                content.classList.add('translate-x-full');
+                setTimeout(() => drawer.classList.add('invisible'), 300);
+            }
+        }
+
+        function checkoutViaWhatsAppDirect() {
+            if (cart.length === 0) {
+                showToast("Cart is empty!");
+                return;
+            }
+
+            const branchName = branchDataset[selectedBranchKey].name;
+            let msg = `*NEW ORDER - HOTEL AALAYAA VEG*\n`;
+            msg += `*Branch Outlet:* ${branchName}\n`;
+            msg += `------------------------------------\n`;
+            cart.forEach(i => {
+                msg += `• ${i.name} x ${i.qty} = ₹${i.price * i.qty}\n`;
+            });
+            const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+            const grandTotal = subtotal + Math.round(subtotal * 0.05);
+            msg += `------------------------------------\n`;
+            msg += `*Total Amount Payable:* ₹${grandTotal}\n\nPlease confirm my order and share live tracking!`;
+
+            openWhatsAppDirectChat(msg);
+        }
+
+        // Online Payment Modal
+        function openPaymentGatewayModal() {
+            if (cart.length === 0) {
+                showToast("Please add food items first!");
+                return;
+            }
+            document.getElementById('paymentGatewayModal').classList.remove('hidden');
+        }
+
+        function closePaymentGatewayModal() {
+            document.getElementById('paymentGatewayModal').classList.add('hidden');
+        }
+
+        function confirmOnlinePaymentAndSendWhatsApp() {
+            const name = document.getElementById('custPayName').value;
+            const phone = document.getElementById('custPayPhone').value;
+
+            if (!name || !phone) {
+                showToast("Please enter your name and WhatsApp number!");
+                return;
+            }
+
+            const subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+            const grandTotal = subtotal + Math.round(subtotal * 0.05);
+            const branchName = branchDataset[selectedBranchKey].name;
+
+            const text = `✅ *ONLINE PAYMENT COMPLETED*\n*Order ID:* #HA-${Math.floor(100000 + Math.random() * 900000)}\n*Customer:* ${name} (${phone})\n*Branch:* ${branchName}\n*Paid Amount:* ₹${grandTotal}\n\nPlease prepare my order for delivery!`;
+
+            closePaymentGatewayModal();
+            toggleCartDrawer();
+            cart = [];
+            updateCartDisplay();
+
+            openWhatsAppDirectChat(text);
+        }
+
+        // Table Reservation
+        function handleTableBookingSubmit(e) {
+            e.preventDefault();
+            const branch = document.getElementById('bookBranch').value;
+            const date = document.getElementById('bookDate').value;
+            const time = document.getElementById('bookTime').value;
+            const guests = document.getElementById('bookGuests').value;
+            const name = document.getElementById('bookName').value;
+            const phone = document.getElementById('bookPhone').value;
+
+            const text = `🪑 *TABLE RESERVATION REQUEST*\n*Branch:* ${branch}\n*Guest Name:* ${name}\n*Phone:* ${phone}\n*Date:* ${date}\n*Time Slot:* ${time}\n*Guests Count:* ${guests} People\n\nPlease confirm table availability!`;
+
+            openWhatsAppDirectChat(text);
+            document.getElementById('tableBookingForm').reset();
+        }
+
+        // Simulated Interactive WhatsApp Bot
+        function simBotResponse(choice) {
+            appendSimUserMsg(`Selected Choice: ${choice}`);
+
+            setTimeout(() => {
+                if (choice === '1') {
+                    appendSimBotMsg("📜 *TODAY'S SPECIAL MENU:*\n• Paneer Barbeque - ₹250\n• Mushroom Barbeque - ₹250\n• Ex Vadakari - ₹80\n• Brownie - ₹90\n\nTap 'Order via WhatsApp' on any menu item above to place order directly!");
+                } else if (choice === '2') {
+                    const b = branchDataset[selectedBranchKey];
+                    appendSimBotMsg(`📍 *CURRENT OUTLET:* ${b.name}\n${b.address}\nPhone: ${b.phone}\nDistance: ${b.distance}`);
+                } else if (choice === '3') {
+                    appendSimBotMsg("💳 *INSTANT UPI PAYMENT LINK:*\nUPI ID: `hotelaalayaa@upi` (GPay / PhonePe / Paytm)\n\nYou can also click 'Pay UPI / Card' inside your shopping cart!");
+                } else if (choice === '4') {
+                    appendSimBotMsg("🪑 *TABLE RESERVATION:*\nTo reserve a table, fill out the Table Reservation form below on the site or send your booking date and timing here!");
+                }
+            }, 500);
+        }
+
+        function sendSimUserMessage() {
+            const input = document.getElementById('simUserInput');
+            const txt = input.value.trim();
+            if (!txt) return;
+
+            appendSimUserMsg(txt);
+            input.value = '';
+
+            setTimeout(() => {
+                appendSimBotMsg("Thanks for your message! Our bot has logged your request. You can also chat directly with our human manager on WhatsApp.");
+            }, 600);
+        }
+
+        function handleSimKeyPress(e) {
+            if (e.key === 'Enter') sendSimUserMessage();
+        }
+
+        function appendSimUserMsg(msg) {
+            const chat = document.getElementById('simChatWindow');
+            chat.innerHTML += `
+                <div class="flex flex-col items-end max-w-[85%] ml-auto">
+                    <div class="bg-[#DCF8C6] text-gray-900 p-2.5 rounded-2xl rounded-tr-none shadow text-[11px]">
+                        <p>${msg}</p>
+                    </div>
+                    <span class="text-[9px] text-gray-500 mt-1">Just now</span>
+                </div>
+            `;
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function appendSimBotMsg(msg) {
+            const chat = document.getElementById('simChatWindow');
+            chat.innerHTML += `
+                <div class="flex flex-col items-start max-w-[85%]">
+                    <div class="bg-white p-3 rounded-2xl rounded-tl-none shadow text-gray-800 space-y-1 text-[11px]">
+                        <p>${msg.replace(/\n/g, '<br>')}</p>
+                    </div>
+                    <span class="text-[9px] text-gray-500 mt-1 pl-1">Just now</span>
+                </div>
+            `;
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // Toggle Helpers
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+    </script>
+</body>
+</html>
